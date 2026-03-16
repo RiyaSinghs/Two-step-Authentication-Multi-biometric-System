@@ -1,25 +1,84 @@
-# Two-step-Authentication-Muti-biometric-System
+<!-- Animated Header -->
+<img src="https://balaboom123-capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=180&section=header&text=Two-Step%20Multi-Biometric%20Auth&fontSize=38&fontColor=fff&animation=twinkling&fontAlignY=32&desc=Face%20%2B%20Voice%20Recognition%20Authentication%20System&descAlignY=52&descSize=18"/>
 
-## Table of Contents
+<div align="center">
 
-- [Dataset](#dataset)
-- [Architecture](#architecture)
-- [How to use](#how-to-use)
-- [Result](#result)
-- [Acknowledge](#acknowledge)
+![IET](https://img.shields.io/badge/IET_ICETA-Published_2024-success?style=flat) &nbsp;
+![arXiv](https://img.shields.io/badge/arXiv-2601.06218-b31b1b?style=flat) &nbsp;
 
-# Dataset: 
-Face image: the raw data are provided by the student in EE's class, which is revealed in dataset folder.  
-Voice: LibriSpeech (Link: https://www.openslr.org/12) (train-clean-360 , test-clean)
+</div>
 
-# Architecture
-## System Prototype
-![workflow](https://github.com/NCUE-EE-AIAL/Two-Step-Muti-Biometric-Authentication-System/blob/main/doc/Flow_diagram.png)
+<p align="center">
+A two-step biometric authentication system combining <strong>face recognition</strong> (VGG16 + MTCNN) and <strong>voice recognition</strong> (ResNet + Triplet Loss) for robust identity verification.
+</p>
 
-## Face Recognition Model 
-![face model](https://github.com/NCUE-EE-AIAL/Two-Step-Muti-Biometric-Authentication-System/blob/main/doc/graph_hr.png)
+<!-- Quick Links -->
+<div align="center">
+  <a href="#-key-features"><img src="https://img.shields.io/badge/Key_Features-4285F4?style=flat-square" alt="Key Features"/></a>
+  <a href="#-architecture"><img src="https://img.shields.io/badge/Architecture-34A853?style=flat-square" alt="Architecture"/></a>
+  <a href="#-getting-started"><img src="https://img.shields.io/badge/Getting_Started-EA4335?style=flat-square" alt="Getting Started"/></a>
+  <a href="#-results"><img src="https://img.shields.io/badge/Results-FBBC05?style=flat-square" alt="Results"/></a>
+</div>
 
-## Voice Recognition Model 
+<br/>
+
+---
+
+## Key Features
+
+<div align="center">
+<table>
+<tr>
+<td width="50%">
+
+### 👤 Face Recognition
+Fine-tuned **VGG16** with MTCNN face detection, data augmentation, and two-stage training (frozen → unfrozen layers)
+
+### 🎙️ Voice Preprocessing
+**VAD** (Voice Activity Detection) and **Fbank** feature extraction with FLAC-to-WAV conversion for LibriSpeech
+
+### ⚡ Real-Time Inference
+Webcam-based face capture and live speaker verification with confidence thresholds
+
+</td>
+<td width="50%">
+
+### 🔊 Voice Recognition
+Custom **ResNet** architecture with triplet loss and cosine similarity for speaker verification
+
+### 🔄 Two-Stage Training
+Random batch pre-training followed by selected batch refinement for optimized convergence
+
+### 📊 Comprehensive Evaluation
+Accuracy, EER, precision, recall, and F-measure metrics with training curve visualization
+
+</td>
+</tr>
+</table>
+</div>
+
+---
+
+## Architecture
+
+### System Prototype
+
+<div align="center">
+
+![workflow](https://github.com/NCUE-EE-AIAL/Two-step-Authentication-Multi-biometric-System/blob/main/doc/Flow_diagram.png)
+
+</div>
+
+### Face Recognition Model
+
+<div align="center">
+
+![face model](https://github.com/NCUE-EE-AIAL/Two-step-Authentication-Multi-biometric-System/blob/main/doc/graph_hr.png)
+
+</div>
+
+### Voice Recognition Model
+
 ```mermaid
 graph TD
     subgraph CNNs
@@ -27,7 +86,7 @@ graph TD
         B2 --> C2[ResNet Block: filter=128]
         C2 --> D2[ResNet Block: filter=256]
         D2 --> G2[ResNet Block: filter=512]
-    
+
         G2 --> N2[Reshape & Mean]
         N2 --> P2[Dense 512]
         P2 --> Q2[Output Layer]
@@ -55,37 +114,115 @@ graph TD
     end
 ```
 
-# How to use
-### image_preprocessing.py
-This script processes a dataset of images to detect and crop faces using the MTCNN detector. It reads image paths from a CSV file, detects faces in each image, and crops the faces to a uniform size. The cropped face images are then saved to a specified output directory, maintaining the original subdirectory structure.
+---
 
-### train_face.ipynb
-This script fine-tunes a pre-trained VGG16 model for a custom face recognition task. It first loads the VGG16 model with pre-trained weights, freezes its convolutional layers, and adds custom fully connected layers for classification. The model is trained on a dataset of face images, utilizing data augmentation to improve performance. The training process includes a custom callback to track batch and epoch metrics. After initial training, the convolutional layers are unfrozen, and the model is fine-tuned with a lower learning rate to further improve accuracy.
+## Dataset
 
-### test_face.py
-This script captures an image from a webcam, detects and crops the face, and uses a pre-trained deep learning model to identify the person. It initializes the webcam, captures a frame, converts it to the required format, and saves it as a test image. The face is then cropped from the image, and the cropped face is passed to a neural network model for prediction. If the model's confidence exceeds the threshold, it prints the matching label and accuracy; otherwise, it indicates no match was found.
+| Modality | Source | Details |
+|----------|--------|---------|
+| **Face** | Custom dataset | Collected from EE's class students (see `Dataset/` folder) |
+| **Voice** | [LibriSpeech](https://www.openslr.org/12) | `train-clean-360` for training, `test-clean` for evaluation |
 
-### voice_preprocessing.py
-This script processes voice files named in the format "(speaker name)-(...)-(number)". It's configured for the Librispeech dataset and includes functions to convert .flac files to .wav. Additionally, it employs VAD (Voice Activity Detection) and Fbank (Filterbank features) to enhance model performance.
+---
 
-### train_voice.py
-To optimize performance, training is divided into two stages: initial training with random batches to achieve acceptable results, followed by training with selected batches to refine and improve the model further. Evaluating the validation data in every epoch and show the trend diagram in the end.
+## Getting Started
 
-### test_voice.py
-This script evaluates a speaker verification model using triplet loss. It imports necessary libraries and custom modules, normalizes scores, clips audio sequences, and generates test data. The model's performance is assessed using cosine similarity, and metrics like accuracy, equal error rate, f-measure, precision, and recall are calculated.
+### Project Structure
 
-# Result
-| System                          | Accuracy   | Equal Error Rate | Precision  | Recall     |
-|---------------------------------|------------|------------------|------------|------------|
-| Face Recognition Model          | 95.135%    |        -         |  96.317%   |  95.153%   |
-| Voice Recognition Model         | 99.1%      |      3.456%      |  86.48%    |  88.65%    |
+```
+.
+├── image_preprocessing.py   # MTCNN face detection & cropping
+├── train_face.ipynb         # VGG16 fine-tuning for face recognition
+├── test_face.py             # Webcam-based face verification
+├── voice_preprocessing.py   # FLAC→WAV, VAD, Fbank extraction
+├── train_voice.py           # Two-stage voice model training
+├── test_voice.py            # Speaker verification evaluation
+├── src/
+│   ├── models.py            # Model architectures
+│   ├── triplet_loss.py      # Triplet loss implementation
+│   ├── random_batch.py      # Random batch sampling
+│   ├── select_batch.py      # Selected batch sampling
+│   ├── silence_detector.py  # Audio silence detection
+│   ├── constants.py         # Configuration constants
+│   └── utils.py             # Utility functions
+├── eval/
+│   └── eval_metrics.py      # Evaluation metrics (EER, F-measure, etc.)
+├── Dataset/                 # Face image dataset
+├── doc/                     # Architecture diagrams & result graphs
+└── checkpoints_sample/      # Sample model checkpoints
+```
 
-![face result](https://github.com/NCUE-EE-AIAL/Two-Step-Muti-Biometric-Authentication-System/blob/main/doc/training_graph.png)
-Graph for epochs of face recognition model showing (a) Training and validation accuracy (b) Training and validation loss.  
-<br>
-![voice result](https://github.com/NCUE-EE-AIAL/Two-Step-Muti-Biometric-Authentication-System/blob/main/doc/training_graph_voice.png)
-Graph for epochs of voice recognition model showing (a) Training and validation EER (b) Training and validation loss.
-<br>
+### Usage
 
-# Acknowledge
-This research is supported by TEEP (Taiwan Experience Education Program) at National Changhua University of Education
+#### 1. Face Recognition Pipeline
+
+```bash
+# Step 1: Preprocess face images (detect & crop faces)
+python image_preprocessing.py
+
+# Step 2: Train the face recognition model (open in Jupyter)
+jupyter notebook train_face.ipynb
+
+# Step 3: Test with webcam
+python test_face.py
+```
+
+#### 2. Voice Recognition Pipeline
+
+```bash
+# Step 1: Preprocess voice data (FLAC→WAV, VAD, Fbank)
+python voice_preprocessing.py
+
+# Step 2: Train the voice recognition model
+python train_voice.py
+
+# Step 3: Evaluate speaker verification
+python test_voice.py
+```
+
+### Script Details
+
+| Script | Description |
+|--------|-------------|
+| `image_preprocessing.py` | Detects and crops faces from images using MTCNN, reads paths from CSV, saves cropped faces maintaining directory structure |
+| `train_face.ipynb` | Fine-tunes VGG16: freezes conv layers → trains custom FC layers → unfreezes and fine-tunes with lower learning rate |
+| `test_face.py` | Captures webcam frame, crops face via MTCNN, runs model prediction, outputs match label if confidence exceeds threshold |
+| `voice_preprocessing.py` | Processes LibriSpeech files (speaker-name format), converts FLAC→WAV, applies VAD and Fbank feature extraction |
+| `train_voice.py` | Two-stage training: random batches for initial convergence, then selected batches for refinement, with per-epoch validation |
+| `test_voice.py` | Evaluates speaker verification using triplet loss model with cosine similarity, reports accuracy, EER, precision, recall, F-measure |
+
+---
+
+## Results
+
+<div align="center">
+
+| System | Accuracy | Equal Error Rate | Precision | Recall |
+|--------|----------|------------------|-----------|--------|
+| **Face Recognition** | **95.135%** | - | 96.317% | 95.153% |
+| **Voice Recognition** | **99.1%** | 3.456% | 86.48% | 88.65% |
+
+</div>
+
+<div align="center">
+
+![face result](https://github.com/NCUE-EE-AIAL/Two-step-Authentication-Multi-biometric-System/blob/main/doc/training_graph.png)
+
+*Training and validation curves for face recognition: (a) Accuracy (b) Loss*
+
+![voice result](https://github.com/NCUE-EE-AIAL/Two-step-Authentication-Multi-biometric-System/blob/main/doc/training_graph_voice.png)
+
+*Training and validation curves for voice recognition: (a) EER (b) Loss*
+
+</div>
+
+---
+
+## Acknowledgement
+
+This research is supported by **TEEP** (Taiwan Experience Education Program) at **National Changhua University of Education**.
+
+---
+
+<!-- Animated Footer -->
+<img src="https://balaboom123-capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=120&section=footer"/>
