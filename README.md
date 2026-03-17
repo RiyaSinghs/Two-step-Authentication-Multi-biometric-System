@@ -14,10 +14,10 @@ A two-step biometric authentication system combining <strong>face recognition</s
 
 <!-- Quick Links -->
 <div align="center">
-  <a href="#-key-features"><img src="https://img.shields.io/badge/Key_Features-4285F4?style=flat-square" alt="Key Features"/></a>
-  <a href="#-architecture"><img src="https://img.shields.io/badge/Architecture-34A853?style=flat-square" alt="Architecture"/></a>
-  <a href="#-getting-started"><img src="https://img.shields.io/badge/Getting_Started-EA4335?style=flat-square" alt="Getting Started"/></a>
-  <a href="#-results"><img src="https://img.shields.io/badge/Results-FBBC05?style=flat-square" alt="Results"/></a>
+  <a href="#key-features"><img src="https://img.shields.io/badge/Key_Features-4285F4?style=flat-square" alt="Key Features"/></a>
+  <a href="#architecture"><img src="https://img.shields.io/badge/Architecture-34A853?style=flat-square" alt="Architecture"/></a>
+  <a href="#getting-started"><img src="https://img.shields.io/badge/Getting_Started-EA4335?style=flat-square" alt="Getting Started"/></a>
+  <a href="#results"><img src="https://img.shields.io/badge/Results-FBBC05?style=flat-square" alt="Results"/></a>
 </div>
 
 <br/>
